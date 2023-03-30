@@ -15,6 +15,13 @@ const RegisterModal = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // On toggle add soon
+  const onToggle = useCallback(()=>{
+    if(isLoading){
+      return ;
+    }
+    registerModal.onClose();
+    loginModal.onOpen();
+  },[isLoading, loginModal, registerModal])
 
   const onSubmit = useCallback(async () => {
     try {
@@ -65,7 +72,7 @@ const RegisterModal = () => {
     <div className='text-neutral-400 text-center mt-4'>
       <p>
         Already Have an Account ?
-        <span onClick={() => { }} className='text-white cursor-pointer hover:underline'>
+        <span onClick={onToggle} className='text-white cursor-pointer hover:underline'>
           Sign In
         </span>
       </p>

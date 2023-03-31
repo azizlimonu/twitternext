@@ -29,7 +29,6 @@ const Header: React.FC<HeaderProps> = ({ showBackArrow, label }) => {
           {label}
         </h1>
       </div>
-
     </div>
   )
 }

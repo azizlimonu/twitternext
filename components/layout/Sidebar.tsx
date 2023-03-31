@@ -42,7 +42,7 @@ const Sidebar = () => {
             <SidebarItem
               key={item.href}
               // alert={item.alert}
-              // auth={item.auth}
+              auth={item.auth}
               href={item.href}
               label={item.label}
               icon={item.icon}

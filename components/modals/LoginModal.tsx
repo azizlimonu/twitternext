@@ -1,8 +1,10 @@
 import useLoginModal from '@/hooks/useLoginModal'
 import useRegisterModal from '@/hooks/useRegisterModal.';
+import { signIn } from 'next-auth/react';
 import { useCallback, useState } from "react";
 import Input from '../Input';
 import Modal from '../Modal';
+import { toast } from 'react-hot-toast';
 
 const LoginModal = () => {
   const loginModal = useLoginModal();
@@ -25,13 +27,19 @@ const LoginModal = () => {
     try {
       setIsLoading(true);
 
+      await signIn('credentials', {
+        email,
+        password,
+      });
+
+      toast.success('Logged in');
       loginModal.onClose();
     } catch (error) {
       console.log(error);
     } finally {
       setIsLoading(false);
     }
-  }, [loginModal]);
+  }, [email, loginModal, password]);
 
   // content modal
   const bodyContent = (
@@ -41,8 +49,10 @@ const LoginModal = () => {
         onChange={(e) => setEmail(e.target.value)}
         value={email}
         disabled={isLoading}
+        type='email'
       />
       <Input
+        type='password'
         placeholder='Password'
         onChange={(e) => setPassword(e.target.value)}
         value={password}

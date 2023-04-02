@@ -6,6 +6,7 @@ import Modal from '../Modal';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import Input from '../Input';
+import ImageUpload from '../ImageUpload';
 
 const EditModal = () => {
   const { data: currentUser } = useCurrentUser();
@@ -20,6 +21,7 @@ const EditModal = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  // effect run on component mount after receive data from api
   useEffect(() => {
     setProfileImage(currentUser?.profileImage)
     setCoverImage(currentUser?.coverImage)
@@ -31,8 +33,8 @@ const EditModal = () => {
   const onSubmit = useCallback(async () => {
     try {
       setIsLoading(true);
-      await axios.patch('/api/edit', { 
-        name, username, bio, profileImage, coverImage 
+      await axios.patch('/api/edit', {
+        name, username, bio, profileImage, coverImage
       });
       mutateFetchedUser();
       toast.success('Updated');
@@ -46,6 +48,19 @@ const EditModal = () => {
 
   const bodyContent = (
     <div className='flex flex-col gap-4'>
+      <ImageUpload
+        value={profileImage}
+        disabled={isLoading}
+        onChange={(image) => setProfileImage(image)}
+        label="Upload Profile Image"
+      />
+
+      <ImageUpload
+        value={coverImage}
+        disabled={isLoading}
+        onChange={(image) => setCoverImage(image)}
+        label="Upload cover image" 
+        />
       <Input
         placeholder="Name"
         onChange={(e) => setName(e.target.value)}

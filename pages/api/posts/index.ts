@@ -14,10 +14,10 @@ export default async function handler(
     // Post a tweet logic
     if (req.method === 'POST') {
       const { currentUser } = await serverAuth(req);
-      const {body} = req.body;
+      const { body } = req.body;
 
       const post = await prisma.post.create({
-        data:{
+        data: {
           body,
           userId: currentUser.id
         }
@@ -26,20 +26,20 @@ export default async function handler(
       return res.status(200).json(post)
     }
     // get tweet logic
-    if(req.method === 'GET'){
-      const {userId}=req.query;
+    if (req.method === 'GET') {
+      const { userId } = req.query;
       let posts;
 
-      if(userId && typeof userId === 'string'){
+      if (userId && typeof userId === 'string') {
         posts = await prisma.post.findMany({
-          where:{
+          where: {
             userId
           },
-          include:{
-            user:true,
+          include: {
+            user: true,
             comments: true
           },
-          orderBy:{
+          orderBy: {
             createdAt: 'desc'
           }
         });
@@ -57,7 +57,7 @@ export default async function handler(
       return res.status(200).json(posts);
     }
   } catch (error) {
-
+    console.log(error);
   }
 
 }

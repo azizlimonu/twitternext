@@ -61,11 +61,17 @@ const Form: React.FC<FormProps> = ({
               value={body}
               placeholder={placeholder}
               rows={2}
-              wrap="hard" 
+              wrap="hard"
               maxLength={114}
-              className='noscroll disabled:opacity-80 resize-none mt-3 w-full bg-black  ring-0 outline-none text-[20px] placeholder-neutral-500  text-white' />
+              className='noscroll peer disabled:opacity-80 resize-none mt-3 w-full bg-black  ring-0 outline-none text-[20px] placeholder-neutral-500  text-white' />
             <hr
-              className="opacity-0  peer-focus:opacity-100 h-[1px]  w-full border-neutral-800 transition"
+              className="
+                opacity-0 
+                peer-focus:opacity-100 
+                h-[1px] 
+                w-full 
+                border-neutral-800 
+                transition"
             />
             <div className='mt-4 flex flex-row justify-end'>
               <Button

@@ -4,7 +4,7 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import { useRouter } from 'next/router';
 import React, { useCallback, useMemo } from 'react'
 import Avatar from '../Avatar';
-import { AiOutlineMessage } from 'react-icons/ai';
+import { AiOutlineHeart, AiOutlineMessage } from 'react-icons/ai';
 
 interface PostItemProps {
   data: Record<string, any>;
@@ -112,6 +112,7 @@ const PostItem: React.FC<PostItemProps> = ({ data = {}, userId }) => {
                 transition 
                 hover:text-red-500
             ">
+              <AiOutlineHeart size={20} />
               {/* <LikeIcon color={hasLiked ? 'red' : ''} size={20} /> */}
               <p>
                 {data.likedIds.length}

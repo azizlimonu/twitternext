@@ -11,11 +11,12 @@ const useFollow = (userId: string) => {
   const { mutate: mutateFetchedUser } = useUser(userId);
 
   const loginModal = useLoginModal();
+
   const isFollowing = useMemo(() => {
     const list = currentUser?.followingIds || [];
 
     return list.includes(userId)
-  }, [currentUser?.followingIds, userId]);
+  }, [currentUser, userId]);
 
   const toggleFollow = useCallback(async () => {
     if (!currentUser) {
@@ -37,12 +38,12 @@ const useFollow = (userId: string) => {
     } catch (error) {
       toast.error('Something went wrong');
     }
-
-    return {
-      isFollowing,
-      toggleFollow
-    }
   }, [currentUser, isFollowing, loginModal, mutateCurrentUser, mutateFetchedUser, userId]);
+
+  return {
+    isFollowing,
+    toggleFollow
+  }
 }
 
 export default useFollow;

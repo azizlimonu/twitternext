@@ -31,23 +31,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (req.method === 'POST') {
       updatedLikedIds.push(currentUser.id);
-    
-    // soon add some notification
-    // notification end
+
+      // soon add some notification
+      // notification end
     }
 
-    if(req.method === 'DELETE'){
+    if (req.method === 'DELETE') {
       updatedLikedIds = updatedLikedIds.filter((likeId) => likeId !== currentUser.id);
     }
 
     const updatedPost = await prisma.post.update({
-      where:{
-        id : postId
+      where: {
+        id: postId
       },
       data: {
-        likedIds : updatedLikedIds
+        likedIds: updatedLikedIds
       }
     });
+
+    return res.status(200).json(updatedPost);
 
   } catch (error) {
     console.log(error);

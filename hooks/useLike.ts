@@ -44,11 +44,13 @@ const useLike = ({ postId, userId }: { postId: string, userId?: string }) => {
       toast.error('Something went wrong');
     }
 
- 
+
   }, [currentUser, hasLiked, loginModal, mutateFetchedPost, mutateFetchedPosts, postId]);
-  
+
   return {
     hasLiked,
     toggleLike,
   }
 };
+
+export default useLike;

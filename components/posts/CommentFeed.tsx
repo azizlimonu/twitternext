@@ -1,18 +1,17 @@
-import React from 'react'
-import CommentItem from './CommentItem';
+import CommentItem from '../posts/CommentItem';
 
 interface CommentFeedProps {
-  comments?: Record<string, any>[];
+    comments?: Record<string, any>[];
 }
 
 const CommentFeed: React.FC<CommentFeedProps> = ({ comments = [] }) => {
   return (
     <>
-      {comments?.map((comments: Record<string, any>) => (
-        <CommentItem key={comments.id} data={comments} />
+      {comments.map((comment) => (
+        <CommentItem key={comment.id} data={comment} />
       ))}
     </>
   )
 }
 
-export default CommentFeed
+export default CommentFeed;

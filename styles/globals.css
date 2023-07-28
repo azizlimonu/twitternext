@@ -9,7 +9,3 @@
 body {
   @apply h-full bg-black
 }
-
-.noscroll::-webkit-scrollbar {
-   display: none;
- }

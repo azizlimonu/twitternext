@@ -1,57 +1,67 @@
 import { useCallback, useMemo } from "react";
-import { toast } from "react-hot-toast";
 
 import axios from "axios";
-import useCurrentUser from "./useCurrentUser";
-import useLoginModal from "./useLoginModal";
-import useUser from "./useUser";
+import { toast } from "react-hot-toast";
 
-const useFollow = (userId: string) => {
-	const { data: currentUser, mutate: mutateCurrentUser } = useCurrentUser();
-	const { mutate: mutateFetchedUser } = useUser(userId);
+import useCurrentUser from "@/hooks/useCurrentUser";
+import useLoginModal from "@/hooks/useLoginModal";
+import useUser from "@/hooks/useUser";
 
-	const loginModal = useLoginModal();
+const useFollow = (userName: string) => {
+  const { data: currentUser, mutate: mutateCurrentUser } = useCurrentUser();
+  const { data: fetchedUser, mutate: mutateFetchedUser } = useUser(userName);
 
-	const isFollowing = useMemo(() => {
-		const list = currentUser?.followingIds || [];
+  const loginModal = useLoginModal();
 
-		return list.includes(userId);
-	}, [userId, currentUser?.followingIds]);
+  const isFollowing = useMemo(() => {
+    const list = currentUser?.followingIds || [];
+    return list.includes(fetchedUser?.id || "");
+  }, [currentUser, fetchedUser]);
 
-	const toggleFollow = useCallback(async () => {
-		if (!currentUser) {
-			return loginModal.onOpen();
-		}
+  const toggleFollow = useCallback(async () => {
+    if (!currentUser) {
+      loginModal.onOpen();
+      return;
+    }
 
-		try {
-			let request;
+    try {
+      let request;
 
-			if (isFollowing) {
-				request = () => axios.delete(`/api/follow?userId=${userId}`);
-			} else {
-				request = () => axios.post("/api/follow", { userId });
-			}
+      if (isFollowing) {
+        request = () =>
+          axios.delete(`/api/follow`, {
+            data: {
+              username: fetchedUser?.username,
+            },
+          });
+      } else {
+        request = () =>
+          axios.post(`/api/follow`, {
+            username: fetchedUser?.username,
+          });
+      }
 
-			await request();
+      await request();
 
-			mutateCurrentUser();
-			mutateFetchedUser();
+      mutateCurrentUser();
+      mutateFetchedUser();
+    } catch (error: any) {
+      console.log(error);
+      toast.error("Failed to follow user");
+    }
+  }, [
+    currentUser,
+    fetchedUser?.username,
+    isFollowing,
+    loginModal,
+    mutateCurrentUser,
+    mutateFetchedUser,
+  ]);
 
-			toast.success("Success");
-		} catch (error) {
-			console.log(error);
-			toast.error("Something went wrong");
-		}
-	}, [
-		currentUser,
-		isFollowing,
-		userId,
-		mutateCurrentUser,
-		mutateFetchedUser,
-		loginModal,
-	]);
-
-	return { isFollowing, toggleFollow };
+  return {
+    isFollowing,
+    toggleFollow,
+  };
 };
 
 export default useFollow;

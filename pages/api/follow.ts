@@ -1,58 +1,58 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-import prisma from "@/libs/prismadb";
 import serverAuth from "@/libs/serverAuth";
+import prisma from "@/libs/prismadb";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== "POST" && req.method !== "DELETE") {
-    return res.status(405).json({ message: "Method not allowed" });
+    return res.status(405).end();
   }
+
   try {
-    const { userId } = req.method === "POST" ? req.body : req.query;
+    const { username } = req.body;
     const { currentUser } = await serverAuth(req, res);
-    if (!userId || typeof userId !== "string") {
-      return res.status(400).json({ message: "Invalid request" });
-    }
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-    });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+
+    if (!username || typeof username !== "string") {
+      throw new Error("Invalid username");
     }
 
-    let updatedFollowingIds = [...(user.followingIds || [])];
+    const user = await prisma.user.findUnique({
+      where: {
+        username,
+      },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    let updatingFollowingIds = [...(currentUser.followingIds || [])];
 
     if (req.method === "POST") {
-      updatedFollowingIds.push(userId);
-
-      try {
-        await prisma.notification.create({
-          data: {
-            body: "Someone followed you!",
-            userId,
-          },
-        });
-        await prisma.user.update({
-          where: { id: userId },
-          data: { hasNotification: true },
-        });
-      } catch (error) {
-        console.log(error);
-      }
+      updatingFollowingIds.push(user.id);
     }
 
     if (req.method === "DELETE") {
-      updatedFollowingIds = updatedFollowingIds.filter((id) => id !== userId);
+      updatingFollowingIds = updatingFollowingIds.filter(
+        (id) => id !== user.id
+      );
     }
 
     const updatedUser = await prisma.user.update({
-      where: { id: currentUser.id },
-      data: { followingIds: updatedFollowingIds },
+      where: {
+        id: currentUser.id,
+      },
+      data: {
+        followingIds: updatingFollowingIds,
+      },
     });
 
-    return res.status(200).json(updatedUser);
-  } catch (error) {
+    return res.status(200).json({ user: updatedUser });
+  } catch (error: any) {
     console.log(error);
-    return res.status(400).json({ message: "Internal server error" });
+    return res.status(500).json({ message: error.message });
   }
 }

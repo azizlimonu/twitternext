@@ -27,13 +27,7 @@ const EditModal = () => {
 		setName(currentUser?.name);
 		setBio(currentUser?.bio);
 		setUsername(currentUser?.username);
-	}, [
-		currentUser?.name,
-		currentUser?.bio,
-		currentUser?.username,
-		currentUser?.profileImage,
-		currentUser?.coverImage,
-	]);
+	}, [currentUser]);
 
 	const [isLoading, setIsLoading] = useState(false);
 
